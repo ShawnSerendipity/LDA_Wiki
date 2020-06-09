@@ -123,7 +123,7 @@ def get_topics(lda_model):
     """
     # Print all the topics
     topics = []
-    for idx, topic in lda_model.print_topics(num_topics=50, num_words=10):
+    for idx, topic in lda_model.print_topics(num_topics=11, num_words=10):
         topics.append(topic)
         print("Topic: {} \nWords: {}".format(idx, topic))
         print("\n")
@@ -247,6 +247,21 @@ def topic_diversity(topics):
     return TD
 
 
+# Query trained model on new dataset
+def query(query_text, dictionary, trained_model, index):
+    """
+    :param query_text: new corpus to be query
+    :param dictionary: dictionary
+    :param trained_model: trained LDA model
+    :param index: index of document in new corpus
+    :return: vector
+    """
+    query_bow = [dictionary.doc2bow(text) for text in query_text]
+    query_doc = query_bow[index]
+    vector = trained_model[query_doc]
+    return vector
+
+
 # Main
 if __name__ == "__main__":
     # load the data-set
@@ -260,7 +275,7 @@ if __name__ == "__main__":
     bow = create_bow(doc_clean, dictionary)
 
     # build and train LDA model
-    lda_model = train_lda(bow, dictionary, 50)
+    lda_model = train_lda(bow, dictionary, 11)
 
     # get and print out generated topics
     topics = get_topics(lda_model)
@@ -272,3 +287,15 @@ if __name__ == "__main__":
     # get Topic Diversity(TD)
     topic_diversity = topic_diversity(topics)
     print("The Topic Diversity(TD) of LDA model is: ", topic_diversity)
+
+    # query on new document
+    new_corpus = [
+        ['computer', 'time', 'graph'],
+        ['survey', 'response', 'eps'],
+        ['human', 'system', 'computer']
+    ]
+    vector = query(query_text=new_corpus,
+                   dictionary=dictionary,
+                   trained_model=lda_model,
+                   index=1)
+    print("Generated vectors are: \n", vector)

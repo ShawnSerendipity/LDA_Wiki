@@ -17,6 +17,19 @@ tree = ET.parse('data/simplewiki-20170201-pages-articles-multistream.xml')
 root = tree.getroot()
 dir_path = 'articles-corpus//'
 
+# Create topic list
+topics = ["Art", "culture", "Classical studies ", "Cooking", "Critical theory", "Hobbies", "Literature",
+          "Entertainment", "Fiction", "Game", "Poetry", "Sports", "Dance", "Film", "Movie", "Music",
+          "Opera ", "Theatre", "Architecture", "Crafts", "Drawing", "Painting", "Photography", "Sculpture",
+          "Typography", "Geography", "places", "Health", "fitness", "Exercise", "Health science", "Nutrition",
+          "History", "events", "Classical antiquity", "Medieval history (Middle Ages)", "Renaissance", "Mathematics",
+          "abstractions", "Arithmetic", "Algebra", "Calculus", "Discrete mathematics", "Geometry", "Trigonometry",
+          "Logic", "Statistics", "Natural sciences", "nature", "Animals", "Biochemistry", "Botany", "Ecology",
+          "Zoology", "Astronomy", "Chemistry", "Earth sciences", "Physics Fractions", "People", "self", "Biology",
+          "Psychology", "Relationships", "Philosophy", "thinking", "Philosophical theories", "Humanism", "Logic",
+          "Thinking", "Transhumanism", "Religion", "spirituality", "Social sciences", "society", "Technology",
+          "applied sciences"]
+
 # Get each document within the corpus
 for i, page in enumerate(root.findall('{http://www.mediawiki.org/xml/export-0.10/}page')):
     for p in page:
@@ -24,7 +37,7 @@ for i, page in enumerate(root.findall('{http://www.mediawiki.org/xml/export-0.10
             for x in p:
                 if x.tag == "{http://www.mediawiki.org/xml/export-0.10/}text":
                     article_txt = x.text
-                    if not article_txt == None:
+                    if article_txt and any(word in article_txt for word in topics):
                         article_txt = article_txt[: article_txt.find("==")]
                         article_txt = re.sub(r"{{.*}}", "", article_txt)
                         article_txt = re.sub(r"\[\[File:.*\]\]", "", article_txt)
@@ -53,6 +66,7 @@ for i, page in enumerate(root.findall('{http://www.mediawiki.org/xml/export-0.10
                         article_txt = re.sub(r"\* .*", "", article_txt)
                         article_txt = re.sub(r"<.*>", "", article_txt)
                         article_txt = re.sub(r"\n", "", article_txt)
+                        article_txt = re.sub(r"[0-9]","", article_txt)
                         article_txt = re.sub(
                             r"\!|\"|\#|\$|\%|\&|\'|\(|\)|\*|\+|\,|\-|\.|\/|\:|\;|\<|\=|\>|\?|\@|\[|\\|\]|\^|\_|\`|\{|\||\}|\~",
                             " ", article_txt)
