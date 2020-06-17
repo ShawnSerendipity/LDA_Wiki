@@ -30,6 +30,10 @@ topics = ["Art", "culture", "Classical studies ", "Cooking", "Critical theory", 
           "Thinking", "Transhumanism", "Religion", "spirituality", "Social sciences", "society", "Technology",
           "applied sciences"]
 
+# Count words of corpus
+word_count = 0
+docs_num = 0
+
 # Get each document within the corpus
 for i, page in enumerate(root.findall('{http://www.mediawiki.org/xml/export-0.10/}page')):
     for p in page:
